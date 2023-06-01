@@ -30,6 +30,16 @@ impl Node {
             }
         }
     }
+
+    fn print(&mut self) {
+        if let Some(next) = &mut self.left {
+            next.print();
+        }
+        println!("{}", self.value);
+        if let Some(next) = &mut self.rigth {
+            next.print();
+        }
+    }
 }
 
 impl fmt::Display for Node {
@@ -51,18 +61,6 @@ fn main() {
     root.insert(46);
     root.insert(48);
 
-    print(&root);
+    root.print();
 
-}
-
-fn print(node: &Node) {
-    if let Some(next) = &node.left {
-        print(&next);
-        println!("/");
-    }
-    println!("{}", node);
-    if let Some(next) = &node.rigth {
-        print(&next);
-        println!("\\");
-    }
 }

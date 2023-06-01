@@ -1,1 +1,1 @@
-/home/nikolas/repositories/binary-tree/target/debug/tree: /home/nikolas/repositories/binary-tree/src/main.rs
+/home/nikolas/repositories/data-structures/binary-tree/target/debug/tree: /home/nikolas/repositories/data-structures/binary-tree/src/main.rs
