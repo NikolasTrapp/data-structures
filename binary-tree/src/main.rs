@@ -17,14 +17,14 @@ impl Node {
 
     fn insert(&mut self, number: i32) {
         if number < self.value {
-            if let Some(left) = &mut self.left {
-                left.insert(number);
+            if let Some(node) = &mut self.left {
+                node.insert(number);
             } else {
                 self.left = Some(Box::new(Node::new(number)));
             }
         } else {
-            if let Some(rigth) = &mut self.rigth {
-                rigth.insert(number);
+            if let Some(node) = &mut self.rigth {
+                node.insert(number);
             } else {
                 self.rigth = Some(Box::new(Node::new(number)));
             }
@@ -39,6 +39,26 @@ impl Node {
         if let Some(next) = &mut self.rigth {
             next.print();
         }
+    }
+
+    fn get_depth(&mut self, number: i32) -> u32 {
+        let mut count = 0;
+        if number == self.value {
+            return 0
+        }
+
+        if number < self.value {
+            if let Some(node) = &mut self.left {
+                count = node.get_depth(number);
+                return count + 1
+            }
+        } else {
+            if let Some(node) = &mut self.rigth {
+                count = node.get_depth(number);
+                return count + 1
+            }
+        }
+        return count
     }
 }
 
@@ -61,6 +81,7 @@ fn main() {
     root.insert(46);
     root.insert(48);
 
-    root.print();
+    // root.print();
+    println!("{}", root.get_depth(53));
 
 }
