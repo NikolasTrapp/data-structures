@@ -1,6 +1,7 @@
 use std::fmt;
 use std::fmt::Debug;
 
+#[derive(Clone)]
 struct Node {
     value: i32,
     right: Option<Box<Node>>,
@@ -46,6 +47,22 @@ impl Node {
         return count
     }
 
+    fn get_min(&mut self) -> &mut Node {
+        if self.left.is_some() {
+            return self.left.as_mut().unwrap().get_min();
+        } else {
+            self
+        }
+    }
+
+    fn get_max(&mut self) -> &mut Node {
+        if self.right.is_some() {
+            return self.right.as_mut().unwrap().get_max();
+        } else {
+            self
+        }
+    }
+
     fn insert(&mut self, number: i32) {
         if self.value == number {
             return
@@ -64,31 +81,28 @@ impl Node {
             }
         }
     }
-
-    fn delete(&mut self, number: i32) -> Option<Box<Node>>{
-        if self.value < number {
+    
+    fn delete(&mut self, number: i32) -> Option<Box<Node>> {
+        if number < self.value {
             if let Some(node) = &mut self.left {
-                node.delete(number);
+                self.left = node.delete(number);
             }
-        } else if self.value > number {
+        } else if number > self.value {
             if let Some(node) = &mut self.right {
-                node.delete(number);
+                self.right = node.delete(number);
             }
         } else {
-            if self.left.is_none() {
+            if self.left.is_none() && self.right.is_none() {
+                return None;
+            } else if self.left.is_none() {
                 return self.right.take()
             } else if self.right.is_none() {
                 return self.left.take()
             } else {
-                let mut temp = self.right.as_mut().unwrap();
-                while let Some(node) = &mut temp.left {
-                    temp = node;
-                }
-                self.value = temp.value;
-                self.right = self.right.take().and_then(|mut r| {
-                    r.delete(temp.value)
-                });
-
+                let mut temp = self.right.clone();
+                let mut left_most = temp.unwrap().get_min().value;
+                self.value = left_most;
+                self.right = self.right.take().and_then(|mut node| node.delete(left_most))
             }
         }
         Some(Box::new(self.clone()))
@@ -116,7 +130,7 @@ fn main() {
     root.insert(46);
     root.insert(48);
 
-    root.delete(40);
+    root.delete(45);
     root.print();
 
 }
