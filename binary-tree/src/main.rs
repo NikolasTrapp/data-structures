@@ -1,5 +1,5 @@
 use std::fmt;
-use std::fmt::Debug;
+use std::io;
 
 #[derive(Clone)]
 struct Node {
@@ -81,7 +81,7 @@ impl Node {
             }
         }
     }
-    
+
     fn delete(&mut self, number: i32) -> Option<Box<Node>> {
         if number < self.value {
             if let Some(node) = &mut self.left {
@@ -118,19 +118,105 @@ impl fmt::Display for Node {
 }
 
 fn main() {
-    let mut root = Node::new(50);
+    let mut root: Option<Box<Node>> = None;
+    loop {
+        print_menu();
+        let option = get_int_input();
 
-    root.insert(49);
-    root.insert(45);
-    root.insert(47);
-    root.insert(53);
-    root.insert(43);
-    root.insert(40);
-    root.insert(44);
-    root.insert(46);
-    root.insert(48);
+        match option {
+            1 => add_node(&mut root),
+            2 => remove_node(&mut root),
+            3 => print_all(&mut root),
+            4 => print_higher(&mut root),
+            5 => print_lower(&mut root),
+            6 => root = Some(Box::new(Node::new(get_int_input()))),
+            7 => get_depth_from_node(&mut root),
+            8 => break,
+            _ => println!("Digite uma opção válida")
+        }
+    }
 
-    root.delete(45);
-    root.print();
+}
 
+fn print_menu() {
+    println!("-=-=-=-=-=-=-MENU-=-=-=-=-=-=-");
+    println!("| 1 - Inserir um Node     |");
+    println!("| 2 - Remover um Node     |");
+    println!("| 3 - Imprimir os Nodes   |");
+    println!("| 4 - Obter maior node    |");
+    println!("| 5 - Obter menor node    |");
+    println!("| 6 - Criar a árvore      |");
+    println!("| 7 - Obter profundidade  |");
+    println!("| 8 - Sair                |");
+    println!("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-");
+    println!("O que deseja fazer:");
+}
+
+fn add_node(root: &mut Option<Box<Node>>) {
+    match root {
+        None => println!("Considere criar uma árvore!"),
+        Some(ref mut node) => {
+            println!("Qual o valor do novo node:");
+            let value = get_int_input();
+            node.insert(value);
+        }
+    };
+
+}
+
+fn remove_node(root: &mut Option<Box<Node>>) {
+    match root {
+        None => println!("Considere criar uma árvore!"),
+        Some(ref mut node) => {
+            println!("Qual o valor do node que deseja remover:");
+            let value = get_int_input();
+            node.delete(value);
+        }
+    };
+}
+
+fn print_all(root: &mut Option<Box<Node>>) {
+    match root {
+        None => println!("Considere criar uma árvore!"),
+        Some(node) => {
+            node.print();
+        },
+    };
+}
+
+fn print_lower(root: &mut Option<Box<Node>>) {
+    match root {
+        None => println!("Considere criar uma árvore!"),
+        Some(node) => {
+            node.get_min();
+        }
+    };
+}
+
+fn print_higher(root: &mut Option<Box<Node>>) {
+    match root {
+        None => println!("Considere criar uma árvore!"),
+        Some(node) => {
+            node.get_max();
+        }
+    };
+}
+
+fn get_depth_from_node(root: &mut Option<Box<Node>>) {
+    match root {
+        None => println!("Considere criar uma árvore!"),
+        Some(ref mut node) => {
+            println!("Qual o valor do node que deseja pegar a profundidade:");
+            let value = get_int_input();
+            node.get_depth(value);
+        }
+    };
+}
+
+fn get_int_input() -> i32 {
+    let mut input = String::new();
+    io::stdin().read_line(&mut input).expect("Não alopra né amigão");
+    let number: i32 = input.trim().parse().expect("Invalid input");
+    // let n: i32 = input.trim().parse().expect("Po parça, custa digitar um número que nem gente?");
+    number
 }
